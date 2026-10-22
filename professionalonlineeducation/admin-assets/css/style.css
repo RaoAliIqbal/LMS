@@ -1,0 +1,223 @@
+/*
+Custom css
+*/
+
+.sidenav li.sub_menu.active, .sidenav li.dashboard.active {
+    color: #53a6fa;
+}
+
+
+.lable_check {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 0;
+    cursor: pointer;
+    font-size: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.lable_check input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+
+/* On mouse-over, add a grey background color */
+.lable_check:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.lable_check input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.lable_check input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.lable_check .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+.sal_range {
+    border: 1px solid #e4e6e8;
+    padding-top: 6px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+    border-radius: 7px;
+}
+
+
+table.schedule-table , table.schedule-table tbody {
+    display: block;
+    width: 100%;
+}
+
+table.schedule-table th {
+    background-color: #021885;
+    color: #fff;
+    font-size: 16px;
+}
+
+table.schedule-table td , table.schedule-table th {
+    padding: 7px 23px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+}
+
+table.schedule-table {
+    margin-bottom: 20px;
+}
+#Contact_Information h2 {
+    /* font-size: 30px; */
+    /* font-weight: 600; */
+    color: #324360;
+    text-transform: uppercase;
+    font-size: 28px;
+    font-family: 'voltesemibold';
+}
+.schedule-table input[type="text"] {
+    width: 117px;
+    font-size: 14px;
+}
+
+.box-blue {
+    text-align: center;
+    background: #96bcea;
+    border-radius: 5px;
+    padding: 10px 0 0 0;
+    margin-right: 10px;
+}
+
+.box-blue h2,.box-blue h3 {
+    color: #fff;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.box-blue a {
+    width: 100%;
+    background: #678bb7;
+    float: left;
+    margin-top: 14px;
+    border-radius: 0px 0px 5px 5px;
+    color: #fff;
+}
+
+.profileView label {font-weight: bold;}
+
+.DetailView {
+    background: #000;
+}
+
+p.DetailValue {
+    background: #f3f6f9;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 42px;
+}
+
+span.project_tag_active {
+    background-color: #ffa200ab;
+    padding: 4px 10px;
+    border-radius: 35px;
+    color: #fff;
+    font-size: 14px;
+}
+
+span.project_tag_completed {
+    background-color: green;
+    padding: 4px 10px;
+    border-radius: 35px;
+    color: #fff;
+    font-size: 14px;
+}
+.box-body.ActionBody a {
+    clear: both;
+    display: flex;
+    margin-bottom: 12px;
+}
+input.btn.btn-primary.cstm_btn {
+    color: #fff !important;
+}
+.cstmBtn.rightALign {
+    color: #fff !important;
+    float: right;
+    margin-top: -20px;
+}
+.spanAncor{ cursor: pointer !important;}
+
+span.addMore {
+    background: #232e3d;
+    padding: 0px 10px 6px 10px;
+    color: #fff;
+    font-weight: 900;
+    font-size: 22px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+.tableOfContentCon .row {
+    margin-top: 15px;
+}
+
+span.removeOpt {
+    background: #b50a0a;
+    padding: 0px 14px 6px 14px;
+    color: #fff;
+    font-weight: 900;
+    font-size: 22px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+.added .row {
+    margin-bottom: 14px;
+}
+
+span.tag.label.label-info span[data-role="remove"]:after {right: 0px !important;margin-left: 20px;background-color: red;display: inline-block;width: 15px;border-radius: 60px;height: 15px;line-height: 1;text-align: center;}
+
+span.tag.label.label-info span[data-role="remove"] {
+    margin-left: 20px;
+    position: relative;
+    left: 10px;
+    top: 3px;
+    margin-right: 5px;
+}

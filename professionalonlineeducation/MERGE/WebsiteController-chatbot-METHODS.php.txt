@@ -1,0 +1,263 @@
+﻿<?php
+// ... paste from dev ...
+    /**
+     * Website chatbot — store escalation and notify the correct staff inbox.
+     */
+    public function chatbotEscalate(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:40',
+            'course_name' => 'required|string|max:255',
+            'issue' => 'nullable|string|max:8000',
+            'type' => 'required|in:it,instructor,customer_service',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Please check the form and try again.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $data = $validator->validated();
+
+        try {
+            $escalation = $this->createChatEscalationForChatbot($data);
+        } catch (QueryException $e) {
+            \Log::error('chatbotEscalate DB: '.$e->getMessage(), ['code' => $e->getCode()]);
+            $mgr = $this->chatbotManagerInbox();
+            try {
+                $phone = isset($data['phone']) ? $data['phone'] : '';
+                $issue = isset($data['issue']) ? $data['issue'] : '';
+                $body = "Website chatbot — the request could not be saved to the database (run migrations / check chat_escalations columns).\r\n\r\n".
+                    "Name: {$data['name']}\r\n".
+                    "Email: {$data['email']}\r\n".
+                    "Phone: {$phone}\r\n".
+                    "Course name: {$data['course_name']}\r\n".
+                    "Team selected: {$data['type']}\r\n".
+                    "Issue / message:\r\n{$issue}\r\n";
+                Mail::raw($body, function ($message) use ($mgr) {
+                    $message->to($mgr)->subject('[Chatbot] Support form (database save failed)');
+                });
+            } catch (\Throwable $mailEx) {
+                \Log::error('chatbotEscalate fallback mgr mail failed: '.$mailEx->getMessage(), ['to' => $mgr]);
+            }
+
+            return response()->json([
+                'ok' => false,
+                'message' => 'We could not save your request right now. Our team has been alerted — please call 1-888-900-3382 or try again in a few minutes.',
+            ], 503);
+        }
+
+        $to = $this->chatbotManagerInbox();
+
+        $staffNotified = false;
+        if ($to !== '') {
+            try {
+                Mail::to($to)->send(new ChatbotStaffNotificationMail($escalation));
+                $staffNotified = true;
+            } catch (\Throwable $e) {
+                \Log::error('chatbotEscalate mail failed: '.$e->getMessage(), ['id' => $escalation->id, 'to' => $to]);
+            }
+        } else {
+            \Log::error('chatbotEscalate: no manager inbox', ['id' => $escalation->id]);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'staff_notified' => $staffNotified,
+            'message' => $staffNotified
+                ? 'Your email and query have been sent to our team. We will get back to you within 24 hours.'
+                : 'Your request was saved. We will get back to you within 24 hours. If you need help sooner, please call 1-888-900-3382.',
+        ]);
+    }
+
+    /**
+     * Student clicked a link in the 48-hour follow-up email.
+     */
+    public function chatbotFollowUp($token, $outcome)
+    {
+        try {
+            $escalation = ChatEscalation::where('token', $token)->first();
+        } catch (QueryException $e) {
+            \Log::error('chatbotFollowUp lookup DB: '.$e->getMessage());
+
+            return view('web.chatbotFollowUpInvalid');
+        }
+
+        if (! $escalation) {
+            return view('web.chatbotFollowUpInvalid');
+        }
+
+        if (! $escalation->follow_up_sent_at) {
+            return view('web.chatbotFollowUpInvalid');
+        }
+
+        if ($escalation->status !== 'pending') {
+            return view('web.chatbotFollowUpAlready');
+        }
+
+        $outcome = strtolower((string) $outcome);
+        $outcome = str_replace('_', '-', $outcome);
+
+        $map = [
+            'yes' => 'yes',
+            'needs-help' => 'needs-help',
+            'needshelp' => 'needs-help',
+            'no-help' => 'no-help',
+            'nohelp' => 'no-help',
+        ];
+        $key = isset($map[$outcome]) ? $map[$outcome] : null;
+        if ($key === null) {
+            return view('web.chatbotFollowUpInvalid');
+        }
+
+        $staffTo = $this->chatbotManagerInbox();
+        $issueLabel = $escalation->typeLabel();
+
+        DB::beginTransaction();
+        try {
+            if ($key === 'yes') {
+                $escalation->status = 'resolved';
+                $escalation->save();
+                Mail::to($escalation->email)->send(new ChatbotStudentReplyMail($escalation, 'great_news'));
+                DB::commit();
+
+                return view('web.chatbotFollowUpThanks', [
+                    'message' => 'Thanks for confirming. We are glad you are all set. If anything else comes up, you can reach us anytime through Support on the website.',
+                ]);
+            }
+
+            if ($key === 'needs-help') {
+                $escalation->status = 'needs_help';
+                $escalation->save();
+                Mail::to($escalation->email)->send(new ChatbotStudentReplyMail($escalation, 'on_it'));
+                Mail::to($staffTo)->send(new ChatbotInternalPriorityMail($escalation, $issueLabel));
+                DB::commit();
+
+                return view('web.chatbotFollowUpThanks', [
+                    'message' => 'We have flagged your request as a priority. A team member will reach out by email shortly.',
+                ]);
+            }
+
+            // no-help → administration-style notice to student only (per client copy)
+            $escalation->status = 'no_help_needed';
+            $escalation->save();
+            Mail::to($escalation->email)->send(new ChatbotStudentReplyMail($escalation, 'escalated'));
+            DB::commit();
+
+            return view('web.chatbotFollowUpThanks', [
+                'message' => 'Thank you for the feedback. Our team has recorded your response.',
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            \Log::error('chatbotFollowUp failed: '.$e->getMessage(), ['id' => $escalation->id]);
+
+            return view('web.chatbotFollowUpInvalid');
+        }
+    }
+
+    /**
+     * Public JSON: extra troubleshooting tips per topic (managed in admin → Support Chatbot Q&A).
+     */
+    public function chatbotQaJson()
+    {
+        $tips = [];
+        try {
+            $rows = ChatbotQa::query()
+                ->where('is_active', true)
+                ->orderBy('topic_key')
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get(['topic_key', 'tip_html']);
+            foreach ($rows as $row) {
+                if (! isset($tips[$row->topic_key])) {
+                    $tips[$row->topic_key] = [];
+                }
+                $tips[$row->topic_key][] = $row->tip_html;
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('chatbotQaJson: '.$e->getMessage());
+        }
+
+        return response()->json(['tips' => $tips]);
+    }
+
+    /**
+     * Insert chat escalation using only columns that exist (avoids 503 when migrations lag behind).
+     * If the course_name column is missing, the course is prepended to issue for storage; the returned
+     * model has course_name set in memory so staff email still shows the course row.
+     */
+    protected function createChatEscalationForChatbot(array $data): ChatEscalation
+    {
+        if (! Schema::hasTable('chat_escalations')) {
+            throw new \RuntimeException('chat_escalations table does not exist');
+        }
+
+        $cols = Schema::getColumnListing('chat_escalations');
+        $has = function ($column) use ($cols) {
+            return in_array($column, $cols, true);
+        };
+
+        $payload = [];
+
+        if ($has('name')) {
+            $payload['name'] = $data['name'];
+        }
+        if ($has('email')) {
+            $payload['email'] = $data['email'];
+        }
+        if ($has('phone')) {
+            $payload['phone'] = isset($data['phone']) ? $data['phone'] : null;
+        }
+        if ($has('type')) {
+            $payload['type'] = $data['type'];
+        }
+
+        $course = $data['course_name'];
+        $issue = isset($data['issue']) ? $data['issue'] : null;
+
+        if ($has('course_name')) {
+            $payload['course_name'] = $course;
+        }
+
+        if ($has('issue')) {
+            if (! $has('course_name')) {
+                $prefix = 'Course: '.$course."\n\n";
+                $issue = ($issue === null || $issue === '') ? rtrim($prefix) : $prefix.$issue;
+            }
+            $payload['issue'] = $issue;
+        }
+
+        if ($has('token')) {
+            $payload['token'] = Str::random(48);
+        }
+        if ($has('status')) {
+            $payload['status'] = 'pending';
+        }
+
+        $escalation = ChatEscalation::create($payload);
+
+        if (! $has('course_name')) {
+            $escalation->setAttribute('course_name', $course);
+        }
+
+        return $escalation;
+    }
+
+    /**
+     * Manager inbox for chatbot form submissions — always used for new escalations (all fields emailed here).
+     */
+    protected function chatbotManagerInbox(): string
+    {
+        $m = trim((string) (config('settings.chatbot.manager_email') ?? ''));
+        if ($m !== '') {
+            return $m;
+        }
+
+        return 'mgr@professionalonlineeducation.com';
+    }
+

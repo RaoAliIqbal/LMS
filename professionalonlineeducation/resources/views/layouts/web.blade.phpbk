@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" href="assets/Fs/images/favicon.ico">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ (count(request()->segments()))?request()->segments()[0]:'Home' }}</title>
+
+    <meta name="keywords" content="" />
+    <meta name="description" content=" " />
+
+    @include('layouts.partials.meta')
+{{--    Dashboard CSS --}}
+    <style>
+
+    </style>
+</head>
+<body>
+
+    @include('layouts.partials.header')
+
+    @yield('content')
+
+    @include('layouts.partials.footer')
+
+    @include('layouts.partials.scripts')
+
+    <div class="cart_block">
+        <a href="{{ route('addToCartPage') }}"><i class="fa fa-shopping-cart" aria-hidden="true"></i> <span id="cartCount">{{ Helper::getCartCount() }}</span></a>
+    </div>
+    <div class="chatBtn_block" id="chatBtn_block">
+        <i class="fa fa-comments" aria-hidden="true"></i>
+    </div>
+
+    <style>
+        .chatBtn_block:hover {
+            opacity: 1;
+        }
+        .chatBtn_block {
+            opacity: 0.8;
+            position: fixed;
+            right: 1em;
+            bottom: 1em;
+            width: 60px;
+            height: 60px;
+            background: #6ba546;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 59px;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+
+    <div id="chat">
+        <div id="hideChat">X</div>
+        <div class="chathead">
+            <img src="{{ url('webAssets/images/bot.png') }}" alt="" />
+            <h4>Hello,</h4>
+            <p>Welcome to our chat!</p>
+        </div>
+        <div class="container" id="flowchat"></div>
+    </div>
+    <link rel="stylesheet" href="{{ url('webAssets/js/conversational-flow-chat/src/flowchat.css') }}">
+
+    <script src="{{ url('webAssets/js/conversational-flow-chat/src/flowchat.js') }}"></script>
+    <script>
+
+        $(function() {
+
+            // Also try "demo-data/simple-data.json"
+
+            $.getJSON( "{{ url('webAssets/js/conversational-flow-chat/demo-data/rosiland-data.json') }}", function( dataJSON ) {
+                $('#flowchat').flowchat({
+                    dataJSON: dataJSON,
+                    autoStart: true
+                });
+            });
+
+            $("#hideChat").click(function (){
+                $("#chat").css('display','none');
+                $("#chat").removeClass('active');
+            });
+            $("#chatBtn_block, .chat").click(function (){
+                $("#chat").addClass('active');
+                $("#chat").css('display','block');
+            });
+
+			$('.fa.fa-bars').click(function(){
+				$('.navbar-nav.navbar').slideToggle();
+			});
+        });
+
+
+
+    </script>
+
+
+
+
+
+</body>
+</html>

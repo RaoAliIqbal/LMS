@@ -1,0 +1,62 @@
+
+@if($exercise && count($q) != 0)
+    @php $j = 0; @endphp
+     @foreach($q as $question)
+         @php $j++; @endphp
+        <div class="correctAnsPopup">
+{{--         <div class="questionSectionPopup"> {!! $question->question !!}</div>--}}
+         <div class="questionSectionPopup"> Q# {{ $j }}</div>
+        <div class="ansSectionPopup">
+        @php $answers = $question->answers; @endphp
+        @if(count($question->answers))
+            <div class="AnsContainer">
+                @if($question->type == '1')
+                    <ul>
+                        @foreach($answers as $answer)
+                            @if($answer->is_true == 1)
+                            <li>
+                                <div class="form-group bg_{{ (isset($request->question[$question->id])? ( ($request->question[$question->id] == $answer->id)?'green':'red'): '0') }}">
+                                    <label for="">{!! $answer->answer !!}</label>
+                                </div>
+                            </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                @elseif($question->type == '2')
+
+                    <ul>
+                        @foreach($answers as $answer)
+                            @if($answer->is_true == 1)
+                            <li>
+                                <div class="form-group bg_{{ (isset($request->question[$question->id])? ( (in_array($answer->id,$request->question[$question->id]))?'green':'red'): '0') }}">
+                                    <label for="">{!! $answer->answer !!}</label>
+                                </div>
+                            </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                @elseif($question->type == '3')
+                    <ul>
+                        @foreach($answers as $answer)
+                            @if($answer->is_true == 1)
+                            <li>
+                                <div class="form-group">
+                                    <div class="correctAnswer">{!! $answer->answer !!}</div>
+                                </div>
+                            </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                @elseif($question->type == '4')
+                   <ul>
+                       @foreach($answers as $answer)
+                            <li>{{ $answer->answer }} -- {{ $answer->answer_two }}</li>
+                       @endforeach
+                   </ul>
+                @endif
+            </div>
+        @endif
+        </div>
+        </div>
+    @endforeach
+@endif

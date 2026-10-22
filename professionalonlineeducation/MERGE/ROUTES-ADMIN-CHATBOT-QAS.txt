@@ -1,0 +1,10 @@
+// Paste inside: Route::group(['prefix' => 'admin', ...], function () {
+
+Route::resource('chatbot-qas', 'Admin\ChatbotQaController')->except(['show'])->names([
+    'index' => 'admin.chatbot-qas.index',
+    'create' => 'admin.chatbot-qas.create',
+    'store' => 'admin.chatbot-qas.store',
+    'edit' => 'admin.chatbot-qas.edit',
+    'update' => 'admin.chatbot-qas.update',
+    'destroy' => 'admin.chatbot-qas.destroy',
+]);

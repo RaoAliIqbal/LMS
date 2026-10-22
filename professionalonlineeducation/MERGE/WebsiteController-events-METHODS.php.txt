@@ -1,0 +1,205 @@
+﻿<?php
+/**
+ * Events + seminar cart + checkout — dev se blocks.
+ * WebsiteController class mein WinMerge se merge karo (chatbot methods na haten).
+ */
+
+// --- dev WebsiteController lines 118-126 ---
+    public function events(){
+        $seminars = Seminar::get();
+        return view('web.seminars',compact('seminars'));
+    }
+    public function eventDetails($id){
+        $seminar = Seminar::find($id);
+        if (!$seminar){ return abort('404');exit(); }
+        return view('web.seminar',compact('seminar'));
+    }
+
+// --- dev WebsiteController lines 268-303 ---
+    public function addToCartSeminar(Request $request)
+    {
+        $id = (int) $request->input('seminarId');
+        if (! Helper::appendSeminarToCart($id)) {
+            return response('0', 422);
+        }
+
+        return (string) $this->combinedCartCount();
+    }
+
+    /**
+     * Guest: store seminar id and send to login; logged-in: add to cart and continue.
+     */
+    public function seminarAddToCartLoginIntent($id)
+    {
+        $id = (int) $id;
+        if ($id < 1 || ! Seminar::whereKey($id)->exists()) {
+            abort(404);
+        }
+
+        if (auth()->check()) {
+            Helper::appendSeminarToCart($id);
+            if (Helper::userIsClientRole(auth()->user())) {
+                return redirect()->route('checkoutPage');
+            }
+
+            return redirect()->route('addToCartPage');
+        }
+
+        session([
+            'post_login_seminar_id' => $id,
+            'post_login_seminar_then_checkout' => true,
+        ]);
+
+        return redirect()->route('login');
+    }
+
+// --- dev WebsiteController lines 305-321 ---
+    protected function combinedCartCount(): int
+    {
+        $c = session()->get('cart');
+        $s = session()->get('seminar_cart', []);
+
+        return (is_array($c) ? count($c) : 0) + (is_array($s) ? count($s) : 0);
+    }
+
+    protected function getSeminarCartTotal($seminars): float
+    {
+        $total = 0;
+        foreach ($seminars as $seminar) {
+            $total += (float) $seminar->price_for_display;
+        }
+
+        return $total;
+    }
+
+// --- dev WebsiteController lines 339-398 ---
+    public function addToCartPage(){
+        $cart = session()->get('cart');
+        $seminarCart = session()->get('seminar_cart', []);
+        if (! is_array($seminarCart)) {
+            $seminarCart = [];
+        }
+
+        $courses = [];
+        if ($cart != null && count($cart)) {
+            $courses = Lesson::whereIn('id', $cart)->get();
+        }
+        $seminars = [];
+        if (count($seminarCart)) {
+            $seminars = Seminar::whereIn('id', $seminarCart)->orderBy('id')->get();
+        }
+
+        return view('web.addToCart', compact('courses', 'seminars'));
+    }
+    public function removeCart($id){
+        $cart = session()->get('cart', []);
+        if (! is_array($cart)) {
+            $cart = [];
+        }
+        if (($key = array_search($id, $cart)) !== false) {
+            unset($cart[$key]);
+        }
+        session()->put('cart', array_values($cart));
+        if (count($cart)) {
+            return redirect()->route('addToCartPage')->with('info', 'Course Successfully removed');
+        }
+        $seminarCart = session()->get('seminar_cart', []);
+        if (is_array($seminarCart) && count($seminarCart)) {
+            return redirect()->route('addToCartPage')->with('info', 'Course Successfully removed');
+        }
+
+        return redirect()->route('coursesPage');
+
+    }
+
+    public function removeSeminarFromCart($id)
+    {
+        $id = (int) $id;
+        $cart = session()->get('seminar_cart', []);
+        if (! is_array($cart)) {
+            $cart = [];
+        }
+        if (($key = array_search($id, $cart, true)) !== false) {
+            unset($cart[$key]);
+        }
+        session()->put('seminar_cart', array_values($cart));
+        $lessonCart = session()->get('cart', []);
+        if (! is_array($lessonCart)) {
+            $lessonCart = [];
+        }
+        if (count($lessonCart) || count($cart)) {
+            return redirect()->route('addToCartPage')->with('info', 'Item removed from your cart.');
+        }
+
+        return redirect()->route('eventsPage');
+    }
+
+// --- dev WebsiteController lines 410-467 ---
+    public function checkoutPage(){
+        $cart = session()->get('cart');
+        $seminarCart = session()->get('seminar_cart', []);
+        if (! is_array($seminarCart)) {
+            $seminarCart = [];
+        }
+        $seminarCart = array_values(array_filter($seminarCart));
+
+        if (($cart === null || count($cart) === 0) && count($seminarCart) === 0) {
+            return redirect()->route('coursesPage');
+        }
+        $cart = $cart === null ? [] : array_values(array_filter($cart));
+
+        $states = State::all();
+        $courses = [];
+        $seminars = [];
+
+        if (count($cart)) {
+            if (auth()->user()) {
+                $user = auth()->user();
+                $userCourses = LessonUser::where('user_id', $user->id)->whereYear('created_at', date('Y'))->pluck('lesson_id')->toArray();
+                $notEnrolledCourses = array_diff($cart, $userCourses);
+                $EnrolledCoursesInCart = $this->getEnrolledCourseInCart($cart, $userCourses);
+                if (count($EnrolledCoursesInCart)) {
+                    Session::flash('info', 'This course already exist in your account. Please select any other course');
+                }
+
+                $courses = Lesson::whereIn('id', $notEnrolledCourses)->get();
+
+                session()->put('cart', array_values($notEnrolledCourses));
+                $cart = array_values($notEnrolledCourses);
+            } else {
+                $courses = Lesson::whereIn('id', $cart)->get();
+            }
+        }
+
+        if (count($seminarCart)) {
+            $seminars = Seminar::whereIn('id', $seminarCart)->orderBy('id')->get();
+        }
+
+        if (count($courses) === 0 && count($seminars) === 0) {
+            return redirect()->route('coursesPage');
+        }
+
+        $total = $this->getTotalAmount($courses) + $this->getSeminarCartTotal($seminars);
+        $ageVerification = false;
+        $ageRestrictedCourses = ['50', '38'];
+        foreach ($cart as $item) {
+            if (in_array((string) $item, $ageRestrictedCourses, true) || in_array($item, $ageRestrictedCourses)) {
+                $ageVerification = true;
+            }
+        }
+
+        $courses = collect($courses);
+        $seminars = collect($seminars);
+
+        return view('web.checkoutPage', compact('courses', 'seminars', 'states', 'total', 'ageVerification'));
+    }
+
+// --- dev WebsiteController lines 572-578 ---
+    public function seminarCheckoutPage($id)
+    {
+        $states = State::all();
+        $seminar = Seminar::find($id);
+        if (!$seminar){ return abort('404');exit(); }
+        return view('web.seminarCheckout',compact('seminar','states'));
+    }
+

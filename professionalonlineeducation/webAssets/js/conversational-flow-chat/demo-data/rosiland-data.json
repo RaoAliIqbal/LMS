@@ -1,0 +1,255 @@
+[
+    {
+        "id":1,
+        "text":"Hey",
+        "messageType":"Question",
+        "imageUrl":"",
+        "nextMessageId":"",
+        "option1":"This is my first time visiting professionalonlineeducation.com.",
+        "option1_nextMessageId":2,
+        "option2":"I am already a student of professionalonlineeducation.com.",
+        "option2_nextMessageId":700,
+        "option3":"",
+        "option3_nextMessageId":"",
+        "option4":"",
+        "option4_nextMessageId":"",
+        "option5":"",
+        "option5_nextMessageId":"",
+        "option6":"",
+        "option6_nextMessageId":""
+    },
+    {
+        "id":2,
+        "text":"Please select any question.",
+        "messageType":"Question",
+        "imageUrl":"",
+        "nextMessageId":"",
+        "option1":"How do I enroll?",
+        "option1_nextMessageId":3,
+        "option2":"How do I register for a course?",
+        "option2_nextMessageId":4,
+        "option3":"What methods of payment do you accept?",
+        "option3_nextMessageId":5,
+        "option4":"How does your website ensure my personal information, and credit card payment is secure?",
+        "option4_nextMessageId":6,
+        "option5":"When can I start the course?",
+        "option5_nextMessageId":7,
+        "option6":"Why should I choose Canham College?",
+        "option6_nextMessageId":8
+    },
+    {
+        "id": 3,
+        "text": "You may enroll into our program by entering your personal details, such as your legal name, email address, and profession. Enrolling in our program doesn’t take time. Just enter these details. It costs nothing!",
+        "messageType": "Text",
+        "imageUrl": "",
+        "nextMessageId": 2
+    },
+    {
+        "id": 4,
+        "text": "Once you have enrolled, you have to enter your state and find out which courses you can enroll in, and pick your preferred one. Once you pick your desired course, add it to your shopping cart. Then, you can register with your password and pay. It is that simple!",
+        "messageType": "Text",
+        "imageUrl": "",
+        "nextMessageId":2
+    },
+    {
+        "id": 5,
+        "text": "We accept Visa, Mastercard, and American Express.",
+        "messageType": "Text",
+        "imageUrl": "",
+        "nextMessageId": 2
+    },
+    {
+        "id": 6,
+        "text": "Your information is safe with us! We take every precaution to make sure that your personal details are private and protected. Your credit card information is not saved directly on our servers. We use \"Secure Socket Layer” technology (signified by the small lock icon in your browser). All of your payments are processed through Authorize.net e-commerce platform VISA-trusted site. This means that none of your data goes anywhere.",
+        "messageType": "Text",
+        "imageUrl": "",
+        "nextMessageId": 2
+    },
+    {
+        "id": 7,
+        "text": "You can start whenever you like. It’s all up to you!",
+        "messageType": "Text",
+        "imageUrl": "",
+        "nextMessageId":2
+    },
+    {
+        "id": 8,
+        "text": "Canham College is a leading College for Chiropractic Education and training. It offers excellence and offers you quality education to help you settle into a great future career. Here, you will experience top-tier teaching and well-designed courses for your chiropractic degree.\nWith Canham College, you are offered both theoretical and hands-on practical experience delivered by expert and esteemed teachers who are dedicated to your cause. If all that sounds good to you, why not give us a shot?\n",
+        "messageType": "Text",
+        "imageUrl": "",
+        "nextMessageId": 2
+    },
+
+
+
+
+	{
+        "id":700,
+        "text":"Were you enroll to prior feb 17 2023 ?",
+        "messageType":"Question",
+        "imageUrl":"",
+        "nextMessageId":"",
+        "option1":"Yes",
+        "option1_nextMessageId":701,
+        "option2":"No",
+        "option2_nextMessageId":50,
+        "option3":""
+    },
+	{
+        "id":50,
+        "text":"Please select any question.",
+        "messageType":"Question",
+        "imageUrl":"",
+        "nextMessageId":"",
+        "option1":"How do I Login my old account?",
+        "option1_nextMessageId":501,
+        "option2":"How do I check my old progress?",
+        "option2_nextMessageId":502,
+        "option3":"How do I download my old certificate?",
+        "option3_nextMessageId":503,
+        "option4":"Is my old data lost?",
+        "option4_nextMessageId":504,
+        "option5":"How can I start existing registed course?",
+        "option5_nextMessageId":505
+    },
+		{
+			"id": 501,
+			"text": "You can access your old account from https://canhamcollege.com/ and click on top right corner's Login button",
+			"messageType":"Question",
+			"imageUrl":"",
+			"nextMessageId":"",
+			"option1":"How do I contact my instructor?",
+			"option1_nextMessageId":5011,
+			"option2":"How do I retrieve my username?",
+			"option2_nextMessageId":5012,
+			"option3":"How do I reset my password?",
+			"option3_nextMessageId":5013,
+			"option4":"How do I update my email?",
+			"option4_nextMessageId":5014,
+			"option5":"Contact with our team",
+			"option5_nextMessageId":9999
+		},
+		{
+			"id": 502,
+			"text": "You can check progress from https://canhamcollege.com/ ",
+				"messageType":"Question",
+			"imageUrl":"",
+			"nextMessageId":"",
+			"option1":"How do I contact my instructor?",
+			"option1_nextMessageId":5011,
+			"option2":"How do I retrieve my username?",
+			"option2_nextMessageId":5012,
+			"option3":"How do I reset my password?",
+			"option3_nextMessageId":5013,
+			"option4":"How do I update my email?",
+			"option4_nextMessageId":5014,
+			"option5":"Contact with our team",
+			"option5_nextMessageId":9999
+		},
+		{
+			"id": 503,
+			"text": "You need to login at https://canhamcollege.com/ to check/download your old certifications",
+				"messageType":"Question",
+			"imageUrl":"",
+			"nextMessageId":"",
+			"option1":"How do I contact my instructor?",
+			"option1_nextMessageId":5011,
+			"option2":"How do I retrieve my username?",
+			"option2_nextMessageId":5012,
+			"option3":"How do I reset my password?",
+			"option3_nextMessageId":5013,
+			"option4":"How do I update my email?",
+			"option4_nextMessageId":5014,
+			"option5":"Contact with our team",
+			"option5_nextMessageId":9999
+		},
+		{
+			"id": 504,
+			"text": "No all your data stored at https://canhamcollege.com/",
+				"messageType":"Question",
+			"imageUrl":"",
+			"nextMessageId":"",
+			"option1":"How do I contact my instructor?",
+			"option1_nextMessageId":5011,
+			"option2":"How do I retrieve my username?",
+			"option2_nextMessageId":5012,
+			"option3":"How do I reset my password?",
+			"option3_nextMessageId":5013,
+			"option4":"How do I update my email?",
+			"option4_nextMessageId":5014,
+			"option5":"Contact with our team",
+			"option5_nextMessageId":9999
+		},
+		{
+			"id": 505,
+			"text": "You can resume your already inrolled course from https://canhamcollege.com/",
+			"messageType":"Question",
+			"imageUrl":"",
+			"nextMessageId":"",
+			"option1":"How do I contact my instructor?",
+			"option1_nextMessageId":5011,
+			"option2":"How do I retrieve my username?",
+			"option2_nextMessageId":5012,
+			"option3":"How do I reset my password?",
+			"option3_nextMessageId":5013,
+			"option4":"How do I update my email?",
+			"option4_nextMessageId":5014,
+			"option5":"Contact with our team",
+			"option5_nextMessageId":9999
+		},
+			{
+				"id": 5011,
+				"text": "Instructors can be reached between 9am-5pm (Pacific Time)",
+				"messageType": "Text",
+				"imageUrl": "",
+				"nextMessageId": 503
+			},
+			{
+				"id": 5012,
+				"text": "To retrieve your username, you have to click on reset password on the 'Login' page and then click on forget password.  It will then ask your registered email, where you just have to enter your email address. Once you receive your password reset email. You can retrieve or change your username from there.",
+				"messageType": "Text",
+				"imageUrl": "",
+				"nextMessageId": 503
+			},
+			{
+				"id": 5013,
+				"text": "To reset your password, you must redirect to the 'Login' page and click on  forgot password. Put your email after that, you get your password reset link in your email. Thus, by following these steps, you can reset your password.",
+				"messageType": "Text",
+				"imageUrl": "",
+				"nextMessageId": 503
+			},
+			{
+				"id": 5015,
+				"text": "Login to your student dashboard.  Click on profile and select update email, enter new email address. ",
+				"messageType": "Text",
+				"imageUrl": "",
+				"nextMessageId": ""
+			},
+			{
+				"id": 9999,
+				"text": "You can contact our team by emailing us at info@canhamcollege.com or you can call on our Toll Free number 1-888-900-3382",
+				"messageType":"Question",
+				"imageUrl":"",
+				"nextMessageId":"",
+				"option1":"Start from begining?",
+				"option1_nextMessageId":1,
+				"option2":"Finish Now",
+				"option2_nextMessageId":9991
+			},
+			{
+				"id": 9991,
+				"text": "Thank you for choosing us!",
+				"messageType": "Text",
+				"imageUrl": "",
+				"nextMessageId": ""
+			},
+            {
+                "id": 701,
+                "text": "Kindly visit 'https://canhamcollege.com/' ",
+                "messageType": "Text",
+                "imageUrl": "",
+                "nextMessageId": 9991
+            }
+
+
+]

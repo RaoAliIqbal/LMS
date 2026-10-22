@@ -1,0 +1,64 @@
+@extends('layouts.web')
+
+@section('content')
+<div class="container">
+    <section class="page_sidepadding page_sidepadding_home">
+        <div class="dashboard_page">
+            <h1>Dashboard</h1>
+            <div class="dashboard_row">
+                <div class="row">
+
+                   @include('layouts.partials.dashboardNav')
+
+                    <div class="col-lg-10">
+                        @include('layouts.partials.alertBox')
+                        <div class="useraccount_div">
+                            <div class="row">
+
+                                {!! Form::open(['method'=>'POST','class'=>'validate custom_form_style','files'=>true,'action'=>['Client\ProfileController@update']]) !!}
+
+                                <ul>
+                                    <li class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="fullname">Full name</label>
+                                            <input type="text" class="form-control" name="name" value="{{ auth()->user()->name }}" id="fullname" placeholder="Full name">
+                                        </div>
+                                    </li>
+                                    <li class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Email Address</label>
+                                            <input type="text" class="form-control" name="email" value="{{ auth()->user()->email }}" disabled readonly id="email" placeholder="email">
+                                        </div>
+                                    </li>
+                                    <li class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="oldpassword">Old Password</label>
+                                            <input type="password" class="form-control" name="oldpassword" id="oldpassword" placeholder="oldpassword">
+                                        </div>
+                                    </li>
+                                    <li class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="newpassword">New Password</label>
+                                            <input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="newpassword">
+                                        </div>
+                                    </li>
+                                    <li class="col-md-6">
+                                        <button class="btn btn-primary btn">Save</button>
+                                    </li>
+                                </ul>
+                                {!! Form::close() !!}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+</div>
+@endsection
+
+@push('scripts')
+
+@endpush

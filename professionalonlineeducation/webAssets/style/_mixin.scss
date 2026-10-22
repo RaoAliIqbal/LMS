@@ -1,0 +1,77 @@
+@mixin transitions($speed: 0.5s) {
+  -webkit-transition: all $speed ease-in-out;
+  -moz-transition: all $speed ease-in-out;
+  -o-transition: all $speed ease-in-out;
+  transition: all $speed ease-in-out;
+}
+
+@mixin borderRadius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -o-border-radius: $radius;
+  -ms-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin scaleMixin($scale:0){
+  -webkit-transform: scale($scale);
+  -moz-transform: scale($scale);
+  -ms-transform: scale($scale);
+  -o-transform: scale($scale);
+  transform: scale($scale);
+}
+
+@mixin customRotate($rotate){
+  -ms-transform: rotate($rotate);
+  -webkit-transform: rotate($rotate);
+  transform: rotate($rotate);
+}
+
+@mixin scale($scale) {
+  -webkit-transform: scale($scale);
+  -moz-transform: scale($scale);
+  -ms-transform: scale($scale);
+  -o-transform: scale($scale);
+  transform: scale($scale);
+}
+
+@mixin transform($translate){
+  -ms-transform: $translate;
+  -webkit-transform: $translate;
+  transform: $translate;
+}
+
+
+
+
+/*==========  Non-Mobile First Method  ==========*/
+
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+
+}
+
+/* Landscape tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+
+}
+
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+
+}
+
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+
+}
+
+/* Portrait phones and smaller */
+@media (max-width: 480px) {
+
+}
+
+/* Portrait phones and smaller */
+@media (max-width: 320px) {
+
+}

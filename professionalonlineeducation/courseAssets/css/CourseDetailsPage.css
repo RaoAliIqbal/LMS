@@ -1,0 +1,106 @@
+.btnContainerQuiz a, .btnContainerQuiz button{
+    padding: 6px 20px;
+    margin-top: 21px;
+    background: #6ea947;
+    border-color: #6ea947;
+}
+.btnContainerQuiz a:hover{
+    background: #568835;
+    border-color: #568835;
+}
+.QuizError{
+    background: #e77cd1;
+    color: #fff;
+    border: #ea03bb;
+    font-size: 25px;
+}
+.cart_block{display: none;  }
+.certifcateBtn{  float: right; margin-top: 10px }
+ul.chaptersLi {
+    margin: 0;
+    padding: 0;
+}
+
+ul.chaptersLi li {
+    width: 100%;
+    margin-right: 10px;
+    float: left;
+    padding: 10px;
+    background: #1580ce;
+    margin-bottom: 10px;
+    box-shadow: 0 0 2px 1px #f7f7f7;
+    cursor: pointer;
+    position: relative;
+    border-radius: 5px;
+    height: 101px;
+}
+ul.chaptersLi li a {
+    color: #fff;
+    font-weight: bold;
+    font-size: 13px;
+}
+.ChaptersCon h6 {
+    font-size: 25px;
+    margin-bottom: 31px !important;
+    border-left: 1px solid;
+    padding-left: 22px;
+}
+.courseTitleCon {
+    text-align: center;
+    background: #1580ce;
+    color: #fff;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+video {
+    width: 100%;
+}
+span.timeAlert {
+    float: right;
+    font-weight: bold;
+}
+ul.chaptersLi li p {
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    font-size: 12px;
+}
+span.completedQuiz {
+    position: absolute;
+    right: -3px;
+    top: -10px;
+    background: #6ea947;
+    color: #fff;
+    padding: 2px 2px;
+    border-radius: 47px;
+    line-height: 0;
+}
+.btnContainerQuiz button {
+    padding: 9px 19px;
+    font-weight: bold;
+    font-size: 15px;
+}
+ul.files li a {
+    text-decoration: none;
+}
+
+ul.files li {
+    padding: 10px;
+    background: #ebebeb;
+    margin-bottom: 10px;
+    width: 83%;
+}
+
+.UserUploads {
+    display: block;
+    clear: both;
+    padding-top: 25px;
+}
+
+.UserUploads h6 {
+    font-size: 25px;
+    margin-bottom: 31px !important;
+    border-left: 1px solid;
+    padding-left: 22px;
+}
+ul.multiQuizReviewUl li {border-bottom: 1px solid #e9e9e9;margin-bottom: 14px;}
